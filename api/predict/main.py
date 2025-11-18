@@ -1,25 +1,26 @@
 import os
 import json
 import requests
+import azure.functions as func
 
-def run(req):
+def main(req: func.HttpRequest) -> func.HttpResponse:
     endpoint = os.getenv("AZUREML_ENDPOINT")
     api_key = os.getenv("AZUREML_API_KEY")
     deploy = os.getenv("AZUREML_DEPLOY")
 
     if not endpoint or not api_key:
-        return {
-            "status": 500,
-            "body": "Missing configuration variables"
-        }
+        return func.HttpResponse(
+            "Missing configuration variables",
+            status_code=500
+        )
 
     try:
         body = req.get_json()
     except:
-        return {
-            "status": 400,
-            "body": "Invalid JSON body"
-        }
+        return func.HttpResponse(
+            "Invalid JSON body",
+            status_code=400
+        )
 
     headers = {
         "Content-Type": "application/json",
@@ -27,9 +28,15 @@ def run(req):
         "azureml-model-deployment": deploy
     }
 
-    response = requests.post(endpoint, headers=headers, json=body)
-
-    return {
-        "status": response.status_code,
-        "body": response.text
-    }
+    try:
+        response = requests.post(endpoint, headers=headers, json=body)
+        return func.HttpResponse(
+            response.text,
+            status_code=response.status_code,
+            mimetype="application/json"
+        )
+    except Exception as e:
+        return func.HttpResponse(
+            f"Request error: {str(e)}",
+            status_code=500
+        )
