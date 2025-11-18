@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Predicción Azure ML</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Predicción con Azure ML</title>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-    <h2>Predicción con Azure ML</h2>
+    <h1>Predicción con Azure ML</h1>
 
-    <textarea id="jsonInput" placeholder='Pegue aquí el JSON'></textarea>
+    <div class="container">
+        <label for="jsonInput">Pegue aquí el JSON:</label>
+        <textarea id="jsonInput" placeholder="Pegue aquí el JSON" rows="10"></textarea>
 
-    <button onclick="sendPrediction()">Enviar</button>
+        <button id="sendBtn">Enviar</button>
 
-    <pre id="result"></pre>
+        <h3>Resultado:</h3>
+        <pre id="resultOutput"></pre>
+    </div>
 
     <script src="app.js"></script>
 </body>

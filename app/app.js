@@ -1,15 +1,27 @@
-async function sendPrediction() {
+document.getElementById("sendBtn").addEventListener("click", async () => {
+    const inputText = document.getElementById("jsonInput").value;
+    const output = document.getElementById("resultOutput");
 
-    const jsonData = document.getElementById("jsonInput").value;
+    if (!inputText) {
+        output.textContent = "Debe pegar un JSON válido.";
+        return;
+    }
 
-    const response = await fetch("/api/predict", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: jsonData
-    });
+    try {
+        const jsonBody = JSON.parse(inputText);
 
-    const result = await response.json();
-    document.getElementById("result").innerText = JSON.stringify(result, null, 2);
-}
+        output.textContent = "Procesando...";
+
+        const response = await fetch("/api/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(jsonBody)
+        });
+
+        const text = await response.text();
+        output.textContent = `Status: ${response.status}\n\n${text}`;
+
+    } catch (error) {
+        output.textContent = "Error al procesar el JSON o enviar la solicitud:\n" + error;
+    }
+});
